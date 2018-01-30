@@ -184,9 +184,7 @@ class NewAssetApprovalZoneAdmin(admin.ModelAdmin):
 
     def approve_selected_objects(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        print("query set model ", selected)
         ct = ContentType.objects.get_for_model(queryset.model)
-        # print("ct ", ct,ct.pk, type(ct))  ct.pk是表的id
         return HttpResponseRedirect("/asset/new_assets/approval/?ct=%s&ids=%s" % (ct.pk, ",".join(selected)))
     approve_selected_objects.short_description = "批准入库"
 
