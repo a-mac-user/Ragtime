@@ -94,11 +94,11 @@ class Asset(models.Model):
     )
     asset_type = models.CharField(u'资产类型', choices=asset_type_choices, max_length=64, default='server')
     status_choice = (
-        ('0', '在线'),
-        ('1', '已下线'),
-        ('2', '未知'),
-        ('3', '故障'),
-        ('4', '备用'),
+        (0, '在线'),
+        (1, '已下线'),
+        (2, '未知'),
+        (3, '故障'),
+        (4, '备用'),
     )
     status = models.SmallIntegerField(u'状态', choices=status_choice, default=0)
     name = models.CharField(u'名称', max_length=64, unique=True)
@@ -129,9 +129,9 @@ class Asset(models.Model):
 class Server(models.Model):
     asset = models.OneToOneField('Asset', verbose_name=u'资产')
     sub_asset_choices = (
-        ('0', 'PC服务器'),
-        ('1', '刀片机'),
-        ('2', '小型机'),
+        (0, 'PC服务器'),
+        (1, '刀片机'),
+        (2, '小型机'),
     )
     sub_asset_type = models.SmallIntegerField(choices=sub_asset_choices, verbose_name='服务器类型', default=0)
     created_by_choices = (

@@ -92,7 +92,7 @@ class ArgvHandler(object):
         f.close()
 
     def __attach_token(self, url_str):
-        # 利用token_id和用户名生成md5, 并加在url
+        # 利用token_id和用户名和时间戳生成md5, 并加在url
         user = settings.params['auth']['user']
         token_id = settings.params['auth']['token']
 

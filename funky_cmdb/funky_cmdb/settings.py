@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'asset.apps.AssetConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -114,3 +115,11 @@ AUTH_USER_MODEL = 'asset.UserProfile'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "statics"),
 )
+
+TOKEN_TIMEOUT = 120
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

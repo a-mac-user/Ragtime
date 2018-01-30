@@ -7,4 +7,4 @@ def WindowsSysInfo():
 
 
 def LinuxSysInfo():
-    return sysinfo.cillect()
+    return sysinfo.collect()
