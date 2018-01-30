@@ -227,7 +227,7 @@ class CPU(models.Model):
         verbose_name_plural = "CPU"
 
     def __str__(self):
-        return self.asset.model
+        return str(self.asset.model)
 
 
 class RAM(models.Model):
