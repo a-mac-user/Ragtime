@@ -1,4 +1,5 @@
 from django.db import models
+from asset.myauth import UserProfile
 
 
 class Asset(models.Model):

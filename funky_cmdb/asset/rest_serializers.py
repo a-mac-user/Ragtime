@@ -1,4 +1,5 @@
 from asset import models
+from asset.myauth import UserProfile
 from rest_framework import serializers
 
 
@@ -11,11 +12,11 @@ class AssetSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.UserProfile
+        model = UserProfile
         fields = ('email', 'name')
 
 
 class IDCSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.UserProfile
+        model = UserProfile
         fields = ('name', )

@@ -118,6 +118,8 @@ STATICFILES_DIRS = (
 
 TOKEN_TIMEOUT = 120
 
+LOGIN_URL = '/login.html'
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'

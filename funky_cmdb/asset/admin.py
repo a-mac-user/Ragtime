@@ -189,8 +189,6 @@ class NewAssetApprovalZoneAdmin(admin.ModelAdmin):
     approve_selected_objects.short_description = "批准入库"
 
 
-admin.site.unregister(models.Group)
-
 admin.site.register(models.UserProfile, UserProfileAdmin)
 admin.site.register(models.Asset, AssetAdmin)
 admin.site.register(models.Server)

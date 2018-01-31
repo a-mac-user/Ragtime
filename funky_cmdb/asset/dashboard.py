@@ -4,7 +4,7 @@ from django.db.models import Count
 
 
 class AssetDashboard(object):
-    # 首页画图需要的数据都在这里生成
+    # 画图需要的数据都在这里生成
     def __init__(self, request):
         self.request = request
         self.asset_list = models.Asset.objects.all()
