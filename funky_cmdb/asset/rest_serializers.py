@@ -3,20 +3,19 @@ from asset.myauth import UserProfile
 from rest_framework import serializers
 
 
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('url', 'name', 'email')
+
+
 class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Asset
         depth = 2
-        fields = ('sn', 'name', 'status', 'asset_type', 'idc')
+        fields = ('name', 'sn', 'server', 'networkdevice')
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class ServerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserProfile
-        fields = ('email', 'name')
-
-
-class IDCSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = ('name', )
+        model = models.Server

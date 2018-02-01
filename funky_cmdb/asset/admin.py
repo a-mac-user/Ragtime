@@ -7,6 +7,16 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 
+class BaseAdmin(object):
+    """自定义admin类"""
+    choice_fields = []
+    fk_fields = []
+    dynamic_fk = None
+    dynamic_list_display = []
+    dynamic_choice_fields = []
+    m2m_fields = []
+
+
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
@@ -132,10 +142,8 @@ class AssetAdmin(admin.ModelAdmin):
                    'manufactory',
                    'business_unit',
                    'asset_type',
-                   'asset_type',
                    'status',
                    'manufactory',
-                   'idc',
                    'business_unit',
                    'admin',
                    'trade_date']
@@ -143,7 +151,7 @@ class AssetAdmin(admin.ModelAdmin):
     fk_fields = ('manufactory', 'idc', 'business_unit', 'admin')
     list_per_page = 10
     dynamic_fk = 'asset_type'
-    dynamic_list_display = ('model', 'sub_asset_type', 'os_type', 'os_distribution')
+    dynamic_list_display = ('model', 'sub_asset_type', )
     dynamic_choice_fields = ('sub_asset_type',)
     m2m_fields = ('tags',)
 
@@ -153,7 +161,7 @@ class NicAdmin(admin.ModelAdmin):
     search_fields = ('macaddress', 'ipaddress')
 
 
-class EventLogAdmin(admin.ModelAdmin):
+class EventLogAdmin(admin.ModelAdmin, BaseAdmin):
     list_display = ('name',
                     'colored_event_type',
                     'asset',

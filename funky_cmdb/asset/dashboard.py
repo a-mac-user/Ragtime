@@ -17,18 +17,15 @@ class AssetDashboard(object):
         self.data['business_load'] = self.get_business_load()
 
     def get_business_load(self):
-        # 调用监控等系统，得到每个业务线的负载率
+        # 调用监控等系统(待开发)，得到每个业务线的负载率
         dataset = {
             'names': [],
-            'data': {'load': [], 'left': []}  # left是为了填充百分比用的
+            'data': [],
         }
-
         for obj in models.BusinessUnit.objects.filter(parent_level=None):
-            load_val = random.randint(1, 100)  # 这是个模拟数据，模拟各业务线的使用率负载
+            load_val = random.randint(20, 95)  # 这是个模拟数据，模拟各业务线的使用率负载
             dataset['names'].append(obj.name)
-            dataset['data']['load'].append(load_val)
-            dataset['data']['left'].append(100-load_val)
-        print('business load ', dataset)
+            dataset['data'].append(load_val)
         return dataset
 
     def get_asset_status_statistics(self):
@@ -38,19 +35,12 @@ class AssetDashboard(object):
             'names': [],
             'data': []
         }
-        for index, item in enumerate(queryset):
-            for db_val, display_name in models.Asset.status_choice:
+        for index, item in enumerate(queryset):  # 0,{}
+            for db_val, display_name in models.Asset.status_choice:  # 0,'在线'
                 if db_val == item['status']:
                     queryset[index]['name'] = display_name
-                    if db_val == 0:  # online
-                        queryset[index]['itemStyle'] = {
-                                    'normal': {'color': 'yellowgreen'}
-                                }
-                        # queryset[index]['selected'] = True
-
-        # print(queryset)
         dataset['names'] = [item['name'] for item in queryset]
-        dataset['data'] = queryset
+        dataset['data'] = [item['value'] for item in queryset]
         return dataset
 
     def get_asset_categories(self):
@@ -75,5 +65,4 @@ class AssetDashboard(object):
             for item in data_list:
                 dataset['names'].append(item['name'])
                 dataset['data'].append(item['total'])
-            # prefetch_data[key] = data_list
         return dataset

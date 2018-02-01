@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load custom_tag %}
+{% block title %}<title>Ragtime - Tables</title>{% endblock %}
+
+  {% block content %}
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <span>资产详细</span>
+        </li>
+        <li class="breadcrumb-item active">资产表格</li>
+      </ol>
+          <!-- DataTables Card-->
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i> 所有资产</div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  {% for column in table_obj.list_display %}
+                      <th>
+                          <a href="">
+                              {% get_table_column column table_obj %}
+                              {% display_orderby_arrow table_obj forloop.counter0 %}
+                          </a>
+                      </th>
+                  {% endfor %}
+                  {% for column in table_obj.dynamic_list_display %}
+                    <th>
+                        <a href="#">
+                            {{ column }}
+                            {% display_orderby_arrow table_obj forloop.counter0 %}
+                        </a>
+                    </th>
+                  {% endfor %}
+                  <!-- display m2m columns-->
+                  {% for column in table_obj.m2m_fields %}
+                    <th>{{  column }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+              {% for row in table_obj.query_sets %}
+                <tr>
+                    {% build_table_row row table_obj %}
+                </tr>
+              {% endfor %}
+              </tbody>
+              <tfoot>
+                <tr>
+                <td colspan="14" class="footable-visible">
+                    <div class="pagination">
+                        <nav>
+                            <p>共{{ paginator.count }}条数据</p>
+                            <ul class="pagination">
+                                {% if table_obj.query_sets.has_previous %}
+                                <li class="disabled page-item">
+                                  <a class="page-link" href="{{ request.get_full_path }}?page={{ table_obj.query_sets.previous_page_number }}" tabindex="-1">Previous</a>
+                                </li>
+                                {% endif %}
+
+                                {% for p_num in paginator.page_range %}
+                                    {% render_page_num request table_obj.query_sets p_num %}
+                                {% endfor %}
+
+                                {% if table_obj.query_sets.has_next %}
+                                <li>
+                                  <a href="{{ request.get_full_path }}?page={{ table_obj.query_sets.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                  </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </td>
+          </tr>
+        </tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer small text-muted">昨天 11:00 PM 更新</div>
+      </div>
+    </div>
+  {% endblock %}
+
+{% block js %}
+{% endblock %}

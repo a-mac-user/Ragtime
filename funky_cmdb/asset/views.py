@@ -1,10 +1,10 @@
 import json
 from asset.dashboard import AssetDashboard
 from django.shortcuts import render, HttpResponse
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
-from asset import core, models, asset_handle, utils, admin, tables
+from django.contrib.auth.decorators import login_required
+from asset import core, models, asset_handle, utils, admin, table
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -22,13 +22,7 @@ def asset_report(request):
         if ass_handler.data_is_valid():
             print("----asset data valid:")
             ass_handler.data_inject()
-            # return HttpResponse(json.dumps(ass_handler.response))
-
         return HttpResponse(json.dumps(ass_handler.response))
-        # return render(request,'assets/asset_report_test.html',{'response':ass_handler.response})
-        # else:
-        # return HttpResponse(json.dumps(ass_handler.response))
-
     return HttpResponse('--test--')
 
 
@@ -37,8 +31,6 @@ def asset_with_no_asset_id(request):
     if request.method == 'POST':
         ass_handler = core.Asset(request)
         res = ass_handler.get_asset_id_by_sn()
-
-        # return render(request,'assets/acquire_asset_id_test.html',{'response':res})
         return HttpResponse(json.dumps(res))
 
 
@@ -79,30 +71,29 @@ def acquire_asset_id_test(request):
 @login_required
 def asset_list(request):
     print(request.GET)
-    asset_obj_list = tables.table_filter(request, admin.AssetAdmin, models.Asset)
-    # asset_obj_list = models.Asset.objects.all()
+    asset_obj_list = table.table_filter(request, admin.AssetAdmin, models.Asset)
     print("asset_obj_list:", asset_obj_list)
-    order_res = tables.get_orderby(request, asset_obj_list, admin.AssetAdmin)
-    # print('----->',order_res)
-    paginator = Paginator(order_res[0], admin.AssetAdmin.list_per_page)
 
+    order_res = table.get_order_by(request, asset_obj_list, admin.AssetAdmin)
+
+    paginator = Paginator(order_res[0], admin.AssetAdmin.list_per_page)
     page = request.GET.get('page')
     try:
-        asset_objs = paginator.page(page)
+        asset_obj = paginator.page(page)
     except PageNotAnInteger:
-        asset_objs = paginator.page(1)
+        asset_obj = paginator.page(1)
     except EmptyPage:
-        asset_objs = paginator.page(paginator.num_pages)
+        asset_obj = paginator.page(paginator.num_pages)
 
-    table_obj = tables.TableHandler(request,
-                                    models.Asset,
-                                    admin.AssetAdmin,
-                                    asset_objs,
-                                    order_res
-                                    )
-
-    return render(request, 'assets/assets.html', {'table_obj': table_obj,
-                                                  'paginator': paginator})
+    table_obj = table.TableHandler(request,
+                                   models.Asset,
+                                   admin.AssetAdmin,
+                                   asset_obj,
+                                   order_res
+                                   )
+    return render(request,
+                  'assets/assets.html',
+                  {'table_obj': table_obj, 'paginator': paginator})
 
 
 @login_required
@@ -116,13 +107,16 @@ def get_asset_list(request):
 @login_required
 def asset_category(request):
     category_type = request.GET.get("category_type")
-    if not category_type: category_type = 'server'
+    if not category_type:
+        category_type = 'server'
     if request.is_ajax():
         categories = asset_handle.AssetCategroy(request)
         data = categories.serialize_data()
         return HttpResponse(data)
     else:
-        return render(request, 'assets/asset_category.html', {'category_type': category_type})
+        return render(request,
+                      'assets/asset_category.html',
+                      {'category_type': category_type})
 
 
 @login_required
@@ -145,22 +139,18 @@ def asset_detail(request, asset_id):
 
 @login_required
 def get_dashboard_data(request):
-    '''返回主页面数据'''
+    # 返回主页面数据
 
-    dashboard_data = AssetDashboard(request)
-    dashboard_data.searilize_page()
-    return HttpResponse(json.dumps(dashboard_data.data))
+    dashboard_data_obj = AssetDashboard(request)
+    dashboard_data_obj.searilize_page()
+    return HttpResponse(json.dumps(dashboard_data_obj.data))
 
 
 @login_required
 def event_center(request):
-    '''事件中心'''
-
-    eventlog_objs = tables.table_filter(request, admin.EventLogAdmin, models.EventLog)
-    # asset_obj_list = models.Asset.objects.all()
-    #print("asset_obj_list:", asset_obj_list)
-    order_res = tables.get_orderby(request, eventlog_objs, admin.EventLogAdmin)
-    # print('----->',order_res)
+    # 事件中心
+    eventlog_objs = table.table_filter(request, admin.EventLogAdmin, models.EventLog)
+    order_res = table.get_order_by(request, eventlog_objs, admin.EventLogAdmin)
     paginator = Paginator(order_res[0], admin.EventLogAdmin.list_per_page)
 
     page = request.GET.get('page')
@@ -171,12 +161,12 @@ def event_center(request):
     except EmptyPage:
         objs = paginator.page(paginator.num_pages)
 
-    table_obj = tables.TableHandler(request,
-                                    models.EventLog,
-                                    admin.EventLogAdmin,
-                                    objs,
-                                    order_res
-                                    )
-
-    return render(request,'assets/event_center.html',{'table_obj': table_obj,
-                                                  'paginator': paginator})
+    table_obj = table.TableHandler(request,
+                                   models.EventLog,
+                                   admin.EventLogAdmin,
+                                   objs,
+                                   order_res
+                                   )
+    return render(request,
+                  'assets/event_center.html',
+                  {'table_obj': table_obj, 'paginator': paginator})

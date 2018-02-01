@@ -42,33 +42,33 @@ class Asset(models.Model):
         verbose_name_plural = '资产总表'
 
     def __str__(self):
-        return '<id:%s name:%s>' % (self.id, self.name)
+        return '资产id:%s  名称:%s>' % (self.id, self.name)
 
 
 class Server(models.Model):
     asset = models.OneToOneField('Asset', verbose_name=u'资产')
-    sub_asset_choices = (
+    sub_asset_type_choices = (
         (0, 'PC服务器'),
         (1, '刀片机'),
         (2, '小型机'),
     )
-    sub_asset_type = models.SmallIntegerField(choices=sub_asset_choices, verbose_name='服务器类型', default=0)
+    sub_asset_type = models.SmallIntegerField(choices=sub_asset_type_choices, verbose_name='服务器类型', default=0)
     created_by_choices = (
         ('auto', '自动创建'),
         ('manual', '手动创建'),
     )
     created_by_type = models.CharField(u'创建类型', choices=created_by_choices, max_length=64, default='auto')
-    raid_type = models.CharField(u'raid类型', max_length=512, blank=True, null=True)
-    os_type = models.CharField(u'操作系统类型', max_length=64, blank=True, null=True)
-    os_distribution = models.CharField(u'发型版本', max_length=64, blank=True, null=True)
-    os_release = models.CharField(u'操作系统版本', max_length=64, blank=True, null=True)
+    raid_type = models.CharField(u'raid类型', max_length=512, blank=True, null=True, default='RAID 5')
+    os_type = models.CharField(u'操作系统类型', max_length=64, blank=True, null=True, default='Linux')
+    os_distribution = models.CharField(u'发行版本', max_length=64, blank=True, null=True, default='Ubuntu Server')
+    os_release = models.CharField(u'操作系统版本', max_length=64, blank=True, null=True, default='16.04.3 LTS')
 
     class Meta:
         verbose_name = '服务器'
         verbose_name_plural = '服务器'
 
     def __str__(self):
-        return '%s sn:%s' % (self.asset.name, self.asset.sn)
+        return '名称:%s  资产sn:%s' % (self.asset.name, self.asset.sn)
 
 
 class SecurityDevice(models.Model):
@@ -109,7 +109,7 @@ class NetworkDevice(models.Model):
         verbose_name_plural = "网络设备"
 
     def __str__(self):
-        return self.asset.name
+        return '名称:%s' % self.asset.name
 
 
 class Software(models.Model):
@@ -118,7 +118,6 @@ class Software(models.Model):
         (1, '办公\开发软件'),
         (2, '业务软件'),
         (3, '固件'),
-
     )
     sub_asset_type = models.SmallIntegerField(choices=sub_asset_type_choices, verbose_name="软件类型", default=0)
     license_num = models.IntegerField(verbose_name="授权数")

@@ -6,7 +6,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^asset/', include('asset.urls')),
     url(r'^api/', include('asset.rest_urls')),
-    url(r'^api-auth', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^$', views.index, name="dashboard"),
     url(r'^login.html$', views.acc_login, name='login'),
     url(r'^charts.html$', views.charts, name='charts'),
