@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load custom_tag %}
+{% block title %}<title>Ragtime - Events</title>{% endblock %}
+
+  {% block content %}
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <span>事件详细</span>
+        </li>
+        <li class="breadcrumb-item active">事件列表</li>
+      </ol>
+          <!-- DataTables Card-->
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i> 所有事件
+        </div>
+        <div class="card-body">
+            <form >
+                <div class="row">
+                    {% for filter_column in table_obj.list_filter %}
+                        <div class="col-md-3" style="margin-bottom: 15px">
+                            {{ filter_column.verbose_name }}
+                            <select name="{{ filter_column.column_name }}" class="form-control" >
+                                {% for choice in filter_column.choices %}
+                                    {% if filter_column.selected == choice.0|to_string  %}
+                                        <option value="{{ choice.0 }}" selected>{{ choice.1 }}</option>
+                                    {% else %}
+                                        <option value="{{ choice.0 }}" >{{ choice.1 }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endfor %}
+                    <div class="col-md-3">
+                        <input type="submit" class="btn btn-warning" value="开始过滤" style="margin-top: 22px">
+                    </div>
+                </div>
+           </form>
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  {% for column in table_obj.list_display %}
+                      <th>
+                          <a href="">
+                              {% get_table_column column table_obj %}
+                              {% display_orderby_arrow table_obj forloop.counter0 %}
+                          </a>
+                      </th>
+                  {% endfor %}
+                  {% for column in table_obj.dynamic_list_display %}
+                    <th>
+                        <a href="#">
+                            {{ column }}
+                            {% display_orderby_arrow table_obj forloop.counter0 %}
+                        </a>
+                    </th>
+                  {% endfor %}
+                  <!-- display m2m columns-->
+                  {% for column in table_obj.m2m_fields %}
+                    <th>{{  column }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+              {% for row in table_obj.query_sets %}
+                <tr>
+                    {% build_table_row row table_obj %}
+                </tr>
+              {% endfor %}
+              </tbody>
+              <tfoot>
+                <tr>
+                <td colspan="14" class="footable-visible">
+                    <div class="pagination col-12">
+                        <nav class="col-12">
+                            <p class="pull-left">共 {{ paginator.count }} 条数据</p>
+                            <ul class="pagination pull-right">
+                                {% if table_obj.query_sets.has_previous %}
+                                <li class="page-item">
+                                  <a class="page-link" href="?page={{ table_obj.query_sets.previous_page_number }}" tabindex="-1">上一页</a>
+                                </li>
+                                {% endif %}
+
+                                {% for p_num in paginator.page_range %}
+                                    {% render_page_num request table_obj.query_sets p_num %}
+                                {% endfor %}
+
+                                {% if table_obj.query_sets.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ table_obj.query_sets.next_page_number }}">下一页</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </td>
+          </tr>
+        </tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer small text-muted">昨天 11:09 PM 更新</div>
+      </div>
+    </div>
+  {% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+
+$(document).ready( function () {
+    $('#asset_list').on('click', 'td:first-child', function () {
+        console.log($(this).text());
+    } );
+} );//end doc ready
+
+</script>
+{% endblock %}
